@@ -1,0 +1,41 @@
+# Ziyi Liu - DCN Lab 2
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-time-app
+  namespace: dcn-lab2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample-time-app
+  template:
+    metadata:
+      labels:
+        app: sample-time-app
+    spec:
+      containers:
+        - name: time-app
+          image: DOCKERHUB_USERNAME/sample-time-app:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
